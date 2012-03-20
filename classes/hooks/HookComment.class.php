@@ -22,11 +22,11 @@ class PluginOpenidcmt_HookComment extends Hook
      */
     public function PostDraftCommentAfter($aData)
     {
-        if (!isset($aData['params'][0]) || empty($aData['params'][0])) {
+        if (!isset($aData['params'][0]) || empty($aData['params'][0]) || !$aData['params'][0]->getId()) {
             return;
         }
 
-        $oCurrentUser = $aData['params'][0];
+        $oCurrentUser = $this->User_GetUserById($aData['params'][0]->getId());
 
         // Get previous comment data
         $aCommentData = (array) unserialize($this->Session_Get('openidcmt_draft_data'));
