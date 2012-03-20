@@ -6,58 +6,43 @@
 		<input type="hidden" id="comment_use_paging" value="{if $aPagingCmt and $aPagingCmt.iCountPage>1}1{/if}" />
 	</div>
 {/if}
-	
-	
-{assign var="comments" value=$aLang.comments_1|cat:";"|cat:$aLang.comments_2|cat:";"|cat:$aLang.comments_3}
-{assign var="count_comments" value=$iCountComment}
-
-<a name="comments"></a>
 
 <div class="comments-header">
-	<div class="comments-header-right">
-		<a href="#" onclick="ls.comments.collapseCommentAll(); return false;" onfocus="blur();">{$aLang.comment_collapse_all}</a> /
-		<a href="#" onclick="ls.comments.expandCommentAll(); return false;" onfocus="blur();">{$aLang.comment_expand_all}</a>
-		
-		{if $sTargetType=='topic'}
-			<a href="{router page='rss'}comments/{$iTargetId}/" class="rss">{$aLang.comments_subscribe}</a>
-		{/if}
-	</div>
-	
-	<strong>{$count_comments} {$count_comments|declension:$comments:'russian'}</strong>
-</div>
-	
-	
-<div class="comments" id="comments">
-	{if count($aComments)>0}		
-		{assign var="bComments" value=true}
-		{assign var="nesting" value="-1"}
-		{foreach from=$aComments item=oComment name=rublist}
-			{assign var="cmtlevel" value=$oComment->getLevel()}
-			
-			{if $cmtlevel>$oConfig->GetValue('module.comment.max_tree')}
-				{assign var="cmtlevel" value=$oConfig->GetValue('module.comment.max_tree')}
-			{/if}
-			
-			{if $nesting < $cmtlevel} 
-			{elseif $nesting > $cmtlevel}    	
-				{section name=closelist1  loop=$nesting-$cmtlevel+1}</div>{/section}
-			{elseif not $smarty.foreach.rublist.first}
-				</div>
-			{/if}
-			
-			<div class="comment-wrapper" id="comment_wrapper_id_{$oComment->getId()}">
-			
-			{include file='comment.tpl'} 
-			{assign var="nesting" value=$cmtlevel}
-			{if $smarty.foreach.rublist.last}
-				{section name=closelist2 loop=$nesting+1}</div>{/section}    
-			{/if}
-		{/foreach}
-	{else}
-		<div class="comments-empty" id="comments_empty">{$aLang.topic_comment_add}</div>
+	<h3>{$aLang.comment_title} (<span id="count-comments">{$iCountComment}</span>)</h3>
+	{if $sTargetType=='topic'}
+		<a href="{router page='rss'}comments/{$iTargetId}/" class="rss">RSS</a>
 	{/if}
-</div>				
-	
+	<a href="#" onclick="ls.comments.collapseCommentAll(); return false;" onfocus="blur();">{$aLang.comment_collapse}</a> /
+	<a href="#" onclick="ls.comments.expandCommentAll(); return false;" onfocus="blur();">{$aLang.comment_expand}</a>
+</div>
+
+<div class="comments" id="comments">
+	{assign var="nesting" value="-1"}
+	{foreach from=$aComments item=oComment name=rublist}
+		{assign var="cmtlevel" value=$oComment->getLevel()}
+
+		{if $cmtlevel>$oConfig->GetValue('module.comment.max_tree')}
+			{assign var="cmtlevel" value=$oConfig->GetValue('module.comment.max_tree')}
+		{/if}
+
+		{if $nesting < $cmtlevel}
+		{elseif $nesting > $cmtlevel}
+			{section name=closelist1 loop=$nesting-$cmtlevel+1}</div>{/section}
+		{elseif not $smarty.foreach.rublist.first}
+			</div>
+		{/if}
+
+		<div class="comment-wrapper" id="comment_wrapper_id_{$oComment->getId()}">
+
+		{include file='comment.tpl'}
+
+		{assign var="nesting" value=$cmtlevel}
+		{if $smarty.foreach.rublist.last}
+			{section name=closelist2 loop=$nesting+1}</div>{/section}
+		{/if}
+	{/foreach}
+</div>
+
 {include file='comment_paging.tpl' aPagingCmt=$aPagingCmt}
 
 {if $bAllowNewComment}
@@ -130,8 +115,8 @@
                 {hook run='form_add_comment_begin'}
                 <textarea name="comment_text" id="form_comment_text" class="input-wide"></textarea>
                 {hook run='form_add_comment_end'}
-                <input type="button" value="{$aLang.comment_preview}" onclick="ls.comments.preview();" class="submit" />
-                <input type="submit" name="submit_comment" value="{$aLang.comment_add}" id="comment-button-submit" onclick="ls.comments.add('form_comment',{$iTargetId},'{$sTargetType}'); return false;" class="submit" />
+                <input type="button" value="{$aLang.comment_preview}" onclick="ls.comments.preview();" />
+                <input type="submit" name="submit_comment" value="{$aLang.comment_add}" id="comment-button-submit" onclick="ls.comments.add('form_comment',{$iTargetId},'{$sTargetType}'); return false;" />
                 <input type="hidden" name="reply" value="0" id="form_comment_reply" />
                 <input type="hidden" name="cmt_target_id" value="{$iTargetId}" />
             </form>
