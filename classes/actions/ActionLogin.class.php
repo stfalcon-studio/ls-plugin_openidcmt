@@ -16,14 +16,10 @@ class PluginOpenidcmt_ActionLogin extends PluginOpenidcmt_Inherit_ActionLogin
     protected function EventLogin()
     {
 
-        // Get previous comment data
-        $aCommentData = (array) unserialize($this->Session_Get('openidcmt_draft_data'));
+        // Get stored return url
+        $sReturnUrl = $this->Session_Get('openidcmt_return') ? : Config::Get('path.root.web') . '/';
 
-        // Check the permission to post comment
-        $bPostComment = ($aCommentData && isset($aCommentData['sReturnUrl']));
-
-
-        $sReturnUrl = $bPostComment ? $aCommentData['sReturnUrl'] : Config::Get('path.root.web') . '/';
+        $this->Session_Drop('openidcmt_return');
 
         $sReffererUrl = isset($_SERVER['HTTP_REFERER']) ? trim($_SERVER['HTTP_REFERER'], '/') . '/' : '';
         if (isPost('submit_login') && $sReffererUrl && (strpos($sReffererUrl, Router::GetPath('login')) !== false)) {
