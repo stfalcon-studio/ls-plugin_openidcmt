@@ -86,6 +86,7 @@ class PluginOpenidcmt_HookComment extends Hook
             $oCommentNew->setUserIp(func_getIp());
             $oCommentNew->setPid($sParentId);
             $oCommentNew->setTextHash(md5($sText));
+            $oCommentNew->setPublish($oTopic->getPublish());
 
             $sReturnUrl = $oTopic->getUrl();
             $this->Hook_Run('comment_add_before', array(
@@ -139,6 +140,12 @@ class PluginOpenidcmt_HookComment extends Hook
                     $this->Notify_SendCommentReplyToAuthorParentComment($oUserAuthorComment, $oTopic, $oCommentNew, $oCurrentUser);
                 }
                 $this->Message_AddNoticeSingle($this->Lang_Get('opencmtid_comment_send'), $this->Lang_Get('attention'), true);
+
+                /**
+                 * Добавляем событие в ленту
+                 */
+                $this->Stream_write($oCommentNew->getUserId(), 'add_comment', $oCommentNew->getId(),
+                    $oTopic->getPublish() && $oTopic->getBlog()->getType() != 'close');
 
                 // Подменяем URL для возврата на страницу комментария
                 $sReffererUrl = isset($_SERVER['HTTP_REFERER']) ? trim($_SERVER['HTTP_REFERER'], '/') : '';
