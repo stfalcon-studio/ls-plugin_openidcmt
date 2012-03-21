@@ -132,13 +132,3 @@
 			</form>
 		</div>
 {/if}
-<br><br>
-			<!-- VK Comments -->
-			<div id="vk_comments"></div>
-			<!-- /VK Comments -->
-			<script src="http://vkontakte.ru/js/api/openapi.js" type="text/javascript" ></script>
-			<script type="text/javascript">
-				VK.init({literal}{{/literal}apiId: {$oConfig->GetValue('plugin.vkcomments.vk_api_id')}, onlyWidgets: true{literal}}{/literal});
-				VK.Widgets.Comments("vk_comments", {literal}{{/literal}limit: {$oConfig->GetValue('plugin.vkcomments.vk_limit')}, width: "{$oConfig->GetValue('plugin.vkcomments.vk_width')}", attach: "*", onChange: VKCmnt_UpdateCommentsVK{literal}}{/literal}, {$oTopic->getId()});
-				function VKCmnt_getTopicId() {literal}{{/literal} return {$oTopic->getId()}; {literal}}{/literal}
-			</script>
