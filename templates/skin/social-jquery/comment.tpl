@@ -35,7 +35,7 @@
 		
 		
 	<div class="comment-actions">
-			{if !$oComment->getDelete() and !$bAllowNewComment}<a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()}); return false;" class="reply-link">{$aLang.comment_answer}</a>{/if}
+		{if !$oComment->getDelete() and !$bAllowNewComment}<a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()}); return false;" class="reply-link">{$aLang.comment_answer}</a>{/if}
 		
 		<a href="#" title="{$aLang.comment_collapse}/{$aLang.comment_expand}" class="folding" {if $bOneComment || !$bComments}style="display: none;"{/if}>{$aLang.comment_fold}</a>
 		
@@ -52,4 +52,4 @@
 </div>
 
 	<div id="comment_preview_{$oComment->getId()}" class="comment-preview" style="display: none;"></div>					
-	<div class="reply" id="reply_{$oComment->getId()}" style="display: none;"></div>	
+	<div class="reply" id="reply_{$oComment->getId()}" style="display: none;"></div>
