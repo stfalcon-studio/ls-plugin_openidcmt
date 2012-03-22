@@ -17,7 +17,7 @@ class PluginOpenidcmt_ActionLogin extends PluginOpenidcmt_Inherit_ActionLogin
     {
 
         // Get stored return url
-        $sReturnUrl = $this->Session_Get('openidcmt_return') ? : Config::Get('path.root.web') . '/';
+        $sReturnUrl = $this->Session_Get('openidcmt_return') ? $this->Session_Get('openidcmt_return') : Config::Get('path.root.web') . '/';
 
         $this->Session_Drop('openidcmt_return');
 
