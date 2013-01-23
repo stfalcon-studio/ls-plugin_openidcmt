@@ -28,8 +28,6 @@ class PluginOpenidcmt extends Plugin
      */
     public function __construct()
     {
-        parent::__construct();
-
         if (!$this->User_IsAuthorization()) {
             // Делегируем шаблоны только для неавторизованых
             $this->aDelegates = array_merge($this->aDelegates, array(

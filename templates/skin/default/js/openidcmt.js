@@ -23,7 +23,9 @@ ls.comments.add = function (formObj, targetId, targetType) {
         } else {
             // Если пользователь не залогинен, показываем форму авторизации
             if (result.bShowLoginForm) {
-                $('#login_form').jqmShow();
+                ls.msg.notice(null, 'Comment is added');
+                $('#reply').hide();
+                $('#window_login_form').jqmShow();
             }
         }
     }.bind(this));

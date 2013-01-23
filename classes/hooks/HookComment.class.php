@@ -139,7 +139,7 @@ class PluginOpenidcmt_HookComment extends Hook
                     $oUserAuthorComment = $oCommentParent->getUser();
                     $this->Notify_SendCommentReplyToAuthorParentComment($oUserAuthorComment, $oTopic, $oCommentNew, $oCurrentUser);
                 }
-                $this->Message_AddNoticeSingle($this->Lang_Get('opencmtid_comment_send'), $this->Lang_Get('attention'), true);
+                $this->Message_AddNoticeSingle($this->Lang_Get('plugin.openidcmt.opencmtid_comment_send'), $this->Lang_Get('attention'), true);
 
                 /**
                  * Добавляем событие в ленту

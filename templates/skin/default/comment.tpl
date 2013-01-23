@@ -84,11 +84,11 @@
             {/if}
             <li class="goto goto-comment-child"><a href="#" title="{$aLang.comment_goto_child}">↓</a></li>
 
-            {if $oUserCurrent}
-                {if !$oComment->getDelete() and !$bAllowNewComment}
-                    <li><a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()}); return false;" class="reply-link link-dotted">{$aLang.comment_answer}</a></li>
-                {/if}
+            {if !$oComment->getDelete() and !$bAllowNewComment}
+                <li><a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()}); return false;" class="reply-link link-dotted">{$aLang.comment_answer}</a></li>
+            {/if}
 
+            {if $oUserCurrent}
                 {if !$oComment->getDelete() and $oUserCurrent and $oUserCurrent->isAdministrator()}
                     <li><a href="#" class="comment-delete link-dotted" onclick="ls.comments.toggle(this,{$oComment->getId()}); return false;">{$aLang.comment_delete}</a></li>
                 {/if}
