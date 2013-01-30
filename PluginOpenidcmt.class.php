@@ -20,7 +20,9 @@ class PluginOpenidcmt extends Plugin
      * @var array
      */
     protected $aInherits = array(
-        'action' => array('ActionLogin'),
+        'module' => array(
+            'ModuleUser' => '_ModuleUser',
+        ),
     );
 
     /**
@@ -29,7 +31,6 @@ class PluginOpenidcmt extends Plugin
     public function __construct()
     {
         if (!$this->User_IsAuthorization()) {
-            // Делегируем шаблоны только для неавторизованых
             $this->aDelegates = array_merge($this->aDelegates, array(
                     'template' => array('comment_tree.tpl', 'comment.tpl'))
             );

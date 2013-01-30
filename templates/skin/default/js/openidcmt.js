@@ -30,28 +30,3 @@ ls.comments.add = function (formObj, targetId, targetType) {
         }
     }.bind(this));
 }
-
-ls.tools.textPreview = function(textId, save, divPreview) {
-	var text =(BLOG_USE_TINYMCE) ? tinyMCE.activeEditor.getContent()  : $('#'+textId).val();
-	var ajaxUrl = aRouter['openidcmt']+'ajaxpreviewcomment';
-	var ajaxOptions = {text: text, save: save};
-	'*textPreviewAjaxBefore*'; '*/textPreviewAjaxBefore*';
-	ls.ajax(ajaxUrl, ajaxOptions, function(result){
-		if (!result) {
-			ls.msg.error('Error','Please try again later');
-		}
-		if (result.bStateError) {
-			ls.msg.error(result.sMsgTitle||'Error',result.sMsg||'Please try again later');
-		} else {
-			if (!divPreview) {
-				divPreview = 'text_preview';
-			}
-			var elementPreview = $('#'+divPreview);
-			'*textPreviewDisplayBefore*'; '*/textPreviewDisplayBefore*';
-			if (elementPreview.length) {
-				elementPreview.html(result.sText);
-				'*textPreviewDisplayAfter*'; '*/textPreviewDisplayAfter*';
-			}
-		}
-	});
-}

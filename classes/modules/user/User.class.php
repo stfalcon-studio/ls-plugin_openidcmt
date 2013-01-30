@@ -1,33 +1,19 @@
 <?php
-
-/* ---------------------------------------------------------------------------
- * @Plugin Name: OpenIdCmt
- * @Author: Web-studio stfalcon.com
- * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * ----------------------------------------------------------------------------
- */
-
-class PluginOpenidcmt_HookComment extends Hook
+class PluginOpenidcmt_ModuleUser extends PluginOpenidcmt_Inherit_ModuleUser
 {
-
-    public function RegisterHook()
+    public function Authorization(ModuleUser_EntityUser $oUser,$bRemember=true,$sKey=null)
     {
-        $this->AddHook('module_user_authorization_after', 'PostDraftCommentAfter');
-    }
-
-    /**
-     * Публикуем сохраненный в сессии комментарий
-     *
-     * @param array $aData
-     */
-    public function PostDraftCommentAfter($aData)
-    {
-        if (!isset($aData['params'][0]) || empty($aData['params'][0]) || !$aData['params'][0]->getId()) {
-            return;
+        if (!parent::Authorization($oUser, $bRemember, $sKey)){
+            return false;
         }
 
-        $oCurrentUser = $this->User_GetUserById($aData['params'][0]->getId());
+        $this->PostDraftCommentAfter($oUser);
 
+        return true;
+    }
+
+    private function PostDraftCommentAfter($oCurrentUser)
+    {
         // Get previous comment data
         $aCommentData = (array) unserialize($this->Session_Get('openidcmt_draft_data'));
 
@@ -160,5 +146,4 @@ class PluginOpenidcmt_HookComment extends Hook
             }
         }
     }
-
 }
