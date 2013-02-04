@@ -1,6 +1,15 @@
 <?php
 class PluginOpenidcmt_ModuleUser extends PluginOpenidcmt_Inherit_ModuleUser
 {
+    /**
+     * Переопределенный метод авторизации, для проверки, писал ли пользователь коментарии перед авторизацией ести да,
+     * то запустить функцию публикации коментария
+     *
+     * @param ModuleUser_EntityUser $oUser
+     * @param bool $bRemember
+     * @param null $sKey
+     * @return bool
+     */
     public function Authorization(ModuleUser_EntityUser $oUser,$bRemember=true,$sKey=null)
     {
         if (!parent::Authorization($oUser, $bRemember, $sKey)){
@@ -12,6 +21,11 @@ class PluginOpenidcmt_ModuleUser extends PluginOpenidcmt_Inherit_ModuleUser
         return true;
     }
 
+    /**
+     * Публикация комментария
+     *
+     * @param ModuleUser_EntityUser $oCurrentUser
+     */
     private function PostDraftCommentAfter($oCurrentUser)
     {
         // Get previous comment data
@@ -132,16 +146,8 @@ class PluginOpenidcmt_ModuleUser extends PluginOpenidcmt_Inherit_ModuleUser
                  */
                 $this->Stream_write($oCommentNew->getUserId(), 'add_comment', $oCommentNew->getId(),
                     $oTopic->getPublish() && $oTopic->getBlog()->getType() != 'close');
-
-                // Подменяем URL для возврата на страницу комментария
-                $sReffererUrl = isset($_SERVER['HTTP_REFERER']) ? trim($_SERVER['HTTP_REFERER'], '/') : '';
-                if ($sReffererUrl == $sReturnUrl) {
-                    $sReturnUrl .= "#comment{$oCommentNew->getId()}";
-                    $_SERVER['HTTP_REFERER'] = $sReturnUrl;
-                } else {
-                    $this->Session_Set('openidcmt_return', "{$sReturnUrl}#comment{$oCommentNew->getId()}");
-                }
-            } else {
+            }
+            else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             }
         }

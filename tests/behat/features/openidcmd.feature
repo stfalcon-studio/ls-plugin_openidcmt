@@ -2,7 +2,7 @@ Feature: Openidcmt plugin standart features BDD
   Test base functionality of LiveStreet Openidcmt plugin standart
 
   @mink:selenium2
-  Scenario: Create message
+  Scenario: Create comment unauthorized user
     Then check is plugin active "openidcmt"
 
     Given I am on "/blog/3.html"
@@ -33,7 +33,7 @@ Feature: Openidcmt plugin standart features BDD
       | test comment |
 
   @mink:selenium2
-  Scenario: Create invalid message
+  Scenario: Create invalid message (to check is error dropped)
     Then check is plugin active "openidcmt"
 
     Given I am on "/blog/3.html"
@@ -44,3 +44,24 @@ Feature: Openidcmt plugin standart features BDD
 
     Then I wait "1000"
     And the response should contain "Comments should consist of 2 upto 3000 chars of decent content"
+
+
+  @mink:selenium2
+  Scenario: Check is comment engine work correctly for authorized users
+    Then check is plugin active "openidcmt"
+
+    Given I am on "/login"
+    Then I want to login as "admin"
+
+    Given I am on "/blog/3.html"
+
+    Then I follow "Add comment"
+    And I fill in "comment_text" with "loginned user comment"
+    And I press "Add"
+
+    Then I wait "1000"
+
+    Given I am on "/blog/3.html"
+    And I should see in element by css "comments" values:
+      | value |
+      | loginned user comment |
