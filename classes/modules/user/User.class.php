@@ -1,33 +1,33 @@
 <?php
-
-/* ---------------------------------------------------------------------------
- * @Plugin Name: OpenIdCmt
- * @Author: Web-studio stfalcon.com
- * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * ----------------------------------------------------------------------------
- */
-
-class PluginOpenidcmt_HookComment extends Hook
+class PluginOpenidcmt_ModuleUser extends PluginOpenidcmt_Inherit_ModuleUser
 {
-
-    public function RegisterHook()
+    /**
+     * Переопределенный метод авторизации, для проверки, писал ли пользователь коментарии перед авторизацией ести да,
+     * то запустить функцию публикации коментария
+     *
+     * @param ModuleUser_EntityUser $oUser
+     * @param bool $bRemember
+     * @param null $sKey
+     * @return bool
+     */
+    public function Authorization(ModuleUser_EntityUser $oUser,$bRemember=true,$sKey=null)
     {
-        $this->AddHook('module_user_authorization_after', 'PostDraftCommentAfter');
+        if (!parent::Authorization($oUser, $bRemember, $sKey)){
+            return false;
+        }
+
+        $this->PostDraftCommentAfter($oUser);
+
+        return true;
     }
 
     /**
-     * Публикуем сохраненный в сессии комментарий
+     * Публикация комментария
      *
-     * @param array $aData
+     * @param ModuleUser_EntityUser $oCurrentUser
      */
-    public function PostDraftCommentAfter($aData)
+    private function PostDraftCommentAfter($oCurrentUser)
     {
-        if (!isset($aData['params'][0]) || empty($aData['params'][0]) || !$aData['params'][0]->getId()) {
-            return;
-        }
-
-        $oCurrentUser = $this->User_GetUserById($aData['params'][0]->getId());
-
         // Get previous comment data
         $aCommentData = (array) unserialize($this->Session_Get('openidcmt_draft_data'));
 
@@ -139,26 +139,17 @@ class PluginOpenidcmt_HookComment extends Hook
                     $oUserAuthorComment = $oCommentParent->getUser();
                     $this->Notify_SendCommentReplyToAuthorParentComment($oUserAuthorComment, $oTopic, $oCommentNew, $oCurrentUser);
                 }
-                $this->Message_AddNoticeSingle($this->Lang_Get('opencmtid_comment_send'), $this->Lang_Get('attention'), true);
+                $this->Message_AddNoticeSingle($this->Lang_Get('plugin.openidcmt.opencmtid_comment_send'), $this->Lang_Get('attention'), true);
 
                 /**
                  * Добавляем событие в ленту
                  */
                 $this->Stream_write($oCommentNew->getUserId(), 'add_comment', $oCommentNew->getId(),
                     $oTopic->getPublish() && $oTopic->getBlog()->getType() != 'close');
-
-                // Подменяем URL для возврата на страницу комментария
-                $sReffererUrl = isset($_SERVER['HTTP_REFERER']) ? trim($_SERVER['HTTP_REFERER'], '/') : '';
-                if ($sReffererUrl == $sReturnUrl) {
-                    $sReturnUrl .= "#comment{$oCommentNew->getId()}";
-                    $_SERVER['HTTP_REFERER'] = $sReturnUrl;
-                } else {
-                    $this->Session_Set('openidcmt_return', "{$sReturnUrl}#comment{$oCommentNew->getId()}");
-                }
-            } else {
+            }
+            else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             }
         }
     }
-
 }

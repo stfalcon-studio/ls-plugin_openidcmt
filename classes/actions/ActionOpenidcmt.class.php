@@ -32,8 +32,9 @@ class PluginOpenidcmt_ActionOpenidcmt extends ActionPlugin
      */
     protected function RegisterEvent()
     {
-        $this->AddEvent('ajaxcheckcomment', 'EventAjaxCheckComment');
-        $this->AddEvent('ajaxpreviewcomment', 'EventAjaxPreviewComment');
+        if (!$this->oUserCurrent) {
+            $this->AddEvent('ajaxcheckcomment', 'EventAjaxCheckComment');
+        }
     }
 
     /**
@@ -81,42 +82,6 @@ class PluginOpenidcmt_ActionOpenidcmt extends ActionPlugin
 
         $this->Viewer_AssignAjax('bState', true);
     }
-
-
-    /**
-     * Предпросмотр текста
-     *
-     */
-    protected function EventAjaxPreviewComment()
-    {
-        $this->Viewer_SetResponseAjax('json');
-        /**
-         * Проверям авторизован ли пользователь
-         */
-        if ($this->oUserCurrent) {
-            $this->Message_AddErrorSingle($this->Lang_Get('already_registered'), $this->Lang_Get('error'));
-            return;
-        }
-        $sText=getRequest('text',null,'post');
-        $bSave = getRequest('save', null, 'post');
-
-        if ($bSave) {
-            $sTextResult = htmlspecialchars($sText);
-        } else {
-            $sTextResult = $this->Text_Parser($sText);
-        }
-
-        /**
-         * Проверяем текст комментария
-         */
-        if (!func_check($sText, 'text', 2, 10000)) {
-            $this->Message_AddErrorSingle($this->Lang_Get('topic_comment_add_text_error'), $this->Lang_Get('error'));
-            return;
-        }
-
-        $this->Viewer_AssignAjax('sText', $sTextResult);
-    }
-
 }
 
 ?>
