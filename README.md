@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/stfalcon-studio/ls-plugin_openidcmt.png)](https://travis-ci.org/stfalcon-studio/ls-plugin_openidcmt)
+
 ОПИСАНИЕ
 --------
 
